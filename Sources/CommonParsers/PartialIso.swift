@@ -167,6 +167,15 @@ extension PartialIso where A == String, B == Double {
     }
 }
 
+extension PartialIso where A == String, B: LosslessStringConvertible {
+    public static var losslessStringConvertible: PartialIso {
+        return PartialIso(
+            apply: B.init,
+            unapply: String.init
+        )
+    }
+}
+
 extension PartialIso where B: RawRepresentable, B.RawValue == A {
     public static var rawRepresentable: PartialIso {
         return .init(
