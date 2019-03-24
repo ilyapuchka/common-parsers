@@ -10,7 +10,6 @@ public protocol FormatType: ExpressibleByArrayLiteral {
     func match(_ a: T) throws -> A?
     func print(_ a: A) throws -> T?
     func template(for a: A) throws -> T?
-
 }
 
 extension FormatType {

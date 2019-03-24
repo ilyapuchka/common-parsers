@@ -38,3 +38,45 @@ public func iso<A, B, C, D, U: Matchable>(_ f: @escaping ((A, B, C, D)) -> U) ->
         unapply: { $0.match(f) }
     ))
 }
+
+public func iso<A, B, C, D, E, U: Matchable>(_ f: @escaping ((A, B, C, D, E)) -> U) -> PartialIso<(A, (B, (C, (D, E)))), U> {
+    return parenthesize(PartialIso<(A, B, C, D, E), U>(
+        apply: f,
+        unapply: { $0.match(f) }
+    ))
+}
+
+public func iso<A, B, C, D, E, F, U: Matchable>(_ f: @escaping ((A, B, C, D, E, F)) -> U) -> PartialIso<(A, (B, (C, (D, (E, F))))), U> {
+    return parenthesize(PartialIso<(A, B, C, D, E, F), U>(
+        apply: f,
+        unapply: { $0.match(f) }
+    ))
+}
+
+public func iso<A, B, C, D, E, F, G, U: Matchable>(_ f: @escaping ((A, B, C, D, E, F, G)) -> U) -> PartialIso<(A, (B, (C, (D, (E, (F, G)))))), U> {
+    return parenthesize(PartialIso<(A, B, C, D, E, F, G), U>(
+        apply: f,
+        unapply: { $0.match(f) }
+    ))
+}
+
+public func iso<A, B, C, D, E, F, G, H, U: Matchable>(_ f: @escaping ((A, B, C, D, E, F, G, H)) -> U) -> PartialIso<(A, (B, (C, (D, (E, (F, (G, H))))))), U> {
+    return parenthesize(PartialIso<(A, B, C, D, E, F, G, H), U>(
+        apply: f,
+        unapply: { $0.match(f) }
+    ))
+}
+
+public func iso<A, B, C, D, E, F, G, H, I, U: Matchable>(_ f: @escaping ((A, B, C, D, E, F, G, H, I)) -> U) -> PartialIso<(A, (B, (C, (D, (E, (F, (G, (H, I)))))))), U> {
+    return parenthesize(PartialIso<(A, B, C, D, E, F, G, H, I), U>(
+        apply: f,
+        unapply: { $0.match(f) }
+    ))
+}
+
+public func iso<A, B, C, D, E, F, G, H, I, J, U: Matchable>(_ f: @escaping ((A, B, C, D, E, F, G, H, I, J)) -> U) -> PartialIso<(A, (B, (C, (D, (E, (F, (G, (H, (I, J))))))))), U> {
+    return parenthesize(PartialIso<(A, B, C, D, E, F, G, H, I, J), U>(
+        apply: f,
+        unapply: { $0.match(f) }
+    ))
+}
