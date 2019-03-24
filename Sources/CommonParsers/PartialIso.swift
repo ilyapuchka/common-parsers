@@ -60,14 +60,14 @@ public struct PartialIso<A, B> {
 
 extension PartialIso where B == A {
     /// The identity partial isomorphism.
-    static var id: PartialIso {
+    public static var id: PartialIso {
         return .init(apply: { $0 }, unapply: { $0 })
     }
 }
 
 extension PartialIso where B == (A, Prelude.Unit) {
     /// An isomorphism between `A` and `(A, Unit)`.
-    static var unit: PartialIso {
+    public static var unit: PartialIso {
         return .init(
             apply: { ($0, Prelude.unit) },
             unapply: { $0.0 }
@@ -78,7 +78,7 @@ extension PartialIso where B == (A, Prelude.Unit) {
 extension Optional {
     public enum iso {
         /// A partial isomorphism `(A) -> A?`
-        static var some: PartialIso<Wrapped, Wrapped?> {
+        public static var some: PartialIso<Wrapped, Wrapped?> {
             return .init(
                 apply: Optional.some,
                 unapply: id
