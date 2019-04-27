@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:4.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -11,7 +11,7 @@ let package = Package(
             targets: ["CommonParsers"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ilyapuchka/swift-prelude.git", .branch("master"))
+        .package(url: "https://github.com/pointfreeco/swift-prelude.git", .branch("master"))
     ],
     targets: [
         .target(
