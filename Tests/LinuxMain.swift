@@ -1,7 +1,8 @@
 import XCTest
 
-import common_parsersTests
+import CommonParsersTests
 
 var tests = [XCTestCaseEntry]()
-tests += common_parsersTests.allTests()
+tests += CommonParsersTests.__allTests()
+
 XCTMain(tests)
