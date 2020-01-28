@@ -11,7 +11,7 @@ let package = Package(
             targets: ["CommonParsers"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-prelude.git", .branch("master"))
+        .package(url: "https://github.com/pointfreeco/swift-prelude.git", .revision("9240a1f951c382e1c7387762c6cd94042baba531"))
     ],
     targets: [
         .target(
