@@ -1,7 +1,47 @@
+import Foundation
 import Prelude
 
-public protocol Matchable: Equatable {
+// see: https://github.com/pointfreeco/swift-case-paths/blob/master/Sources/CasePaths/EnumReflection.swift#L44
+public func extract<Root, Value>(case embed: (Value) -> Root, from root: Root) -> Value? {
+    func extractHelp(from root: Root) -> ([String?], Value)? {
+        if let value = root as? Value {
+            var otherRoot = embed(value)
+            var root = root
+            if memcmp(&root, &otherRoot, MemoryLayout<Root>.size) == 0 {
+                return ([], value)
+            }
+        }
+        var path: [String?] = []
+        var any: Any = root
+        
+        while case let (label?, anyChild)? = Mirror(reflecting: any).children.first {
+            path.append(label)
+            path.append(String(describing: type(of: anyChild)))
+            if let child = anyChild as? Value {
+                return (path, child)
+            }
+            any = anyChild
+        }
+        if MemoryLayout<Value>.size == 0 {
+            return (["\(root)"], unsafeBitCast((), to: Value.self))
+        }
+        return nil
+    }
+    if
+        let (rootPath, child) = extractHelp(from: root),
+        let (otherPath, _) = extractHelp(from: embed(child)),
+        rootPath == otherPath { return child }
+    return nil
+}
+
+public protocol Matchable {
     func match<A>(_ constructor: (A) -> Self) -> A?
+}
+
+public extension Matchable {
+    func match<A>(_ constructor: (A) -> Self) -> A? {
+        return extract(case: constructor, from: self)
+    }
 }
 
 public func iso<U: Matchable>(_ f: U) -> PartialIso<Prelude.Unit, U> {
