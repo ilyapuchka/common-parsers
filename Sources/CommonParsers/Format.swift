@@ -44,9 +44,10 @@ extension FormatType {
     init(
         parse: @escaping (T) throws -> (rest: T, match: A)?,
         print: @escaping (A) throws -> T?,
-        template: @escaping (A) throws -> T?
+        template: @escaping (A) throws -> T?,
+        templateValue: @escaping () throws -> A?
     ) {
-        self.init(Parser<T, A>(parse: parse, print: print, template: template))
+        self.init(Parser<T, A>(parse: parse, print: print, template: template, templateValue: templateValue))
     }
 
     public func match(_ t: T) throws -> A? {
@@ -57,7 +58,7 @@ extension FormatType {
         return try self.parser.print(a)
     }
 
-    public func template(for a: A) throws -> T? {
-        return try self.parser.template(a)
+    public func template() throws -> T? {
+        try self.parser.templateValue().flatMap(self.parser.template)
     }
 }

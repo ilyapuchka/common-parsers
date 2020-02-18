@@ -8,7 +8,26 @@ public struct Parser<T: Monoid, A> {
     public let parse: (T) throws -> (rest: T, match: A)?
     public let print: (A) throws -> T?
     public let template: (A) throws -> T?
+    public let templateValue: () throws -> A?
 
+    public init(
+        parse: @escaping (T) throws -> (rest: T, match: A)?,
+        print: @escaping (A) throws -> T?,
+        template: @escaping (A) throws -> T?,
+        templateValue: @escaping () throws -> A?
+    ) {
+        self.parse = parse
+        self.print = print
+        self.template = template
+        self.templateValue = templateValue
+    }
+}
+
+public protocol CustomParserTemplateValueConvertible {
+    static var parserTemplateValue: Self { get }
+}
+
+extension Parser where A: CustomParserTemplateValueConvertible {
     public init(
         parse: @escaping (T) throws -> (rest: T, match: A)?,
         print: @escaping (A) throws -> T?,
@@ -17,6 +36,7 @@ public struct Parser<T: Monoid, A> {
         self.parse = parse
         self.print = print
         self.template = template
+        self.templateValue = { A.parserTemplateValue }
     }
 }
 
@@ -38,6 +58,9 @@ extension Parser {
                 let lhs = try lhs.template(ab.0)
                 let rhs = try rhs.template(ab.1)
                 return (curry(<>) <¢> lhs <*> rhs)
+        }, templateValue: {
+            guard let lhsValue = try lhs.templateValue(), let rhsValue = try rhs.templateValue() else { return nil }
+            return (lhsValue, rhsValue)
         })
     }
 
@@ -66,7 +89,8 @@ extension Parser {
                 return try lhs.apply(match).map { (rest, $0) }
         },
             print: lhs.unapply >=> rhs.print,
-            template: lhs.unapply >=> rhs.template
+            template: lhs.unapply >=> rhs.template,
+            templateValue: { try rhs.templateValue().flatMap(lhs.apply) }
         )
     }
 }
@@ -89,7 +113,8 @@ extension Parser {
         return .init(
             parse: lhs.parse <|> rhs.parse,
             print: lhs.print <|> rhs.print,
-            template: lhs.template <|> rhs.template
+            template: lhs.template <|> rhs.template,
+            templateValue: lhs.templateValue
         )
     }
 
@@ -98,7 +123,8 @@ extension Parser {
         return Parser(
             parse: const(nil),
             print: const(nil),
-            template: const(nil)
+            template: const(nil),
+            templateValue: { nil }
         )
     }
 }
